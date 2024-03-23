@@ -1,0 +1,114 @@
+import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
+import plotly.io as pio
+
+def load_data(file_path, encoding='latin-1'):
+    """
+    Load data from CSV file.
+
+    Parameters:
+        file_path (str): Path to the CSV file.
+        encoding (str): Encoding type for reading the CSV file.
+
+    Returns:
+        DataFrame: Loaded data.
+    """
+    return pd.read_csv(file_path, encoding=encoding)
+
+def preprocess_data(df):
+    """
+    Preprocess the loaded data.
+
+    Parameters:
+        df (DataFrame): Input DataFrame.
+
+    Returns:
+        DataFrame: Preprocessed DataFrame.
+    """
+    # Remove unwanted symbols in column names
+    df.columns = df.columns.str.replace('[^\w\s]', '')
+
+    # Check for missing values
+    missing_values = df.isnull().sum()
+    print("Missing Values:\n", missing_values)
+
+    return df
+
+def plot_histogram(df, column, nbins=10, title=''):
+    """
+    Plot histogram for a specific column in the DataFrame.
+
+    Parameters:
+        df (DataFrame): Input DataFrame.
+        column (str): Name of the column to plot histogram for.
+        nbins (int): Number of bins for the histogram.
+        title (str): Title for the plot.
+
+    Returns:
+        None
+    """
+    fig = px.histogram(df, x=column, nbins=nbins, title=title)
+    fig.show()
+
+def plot_line(df, x_column, y_column, title=''):
+    """
+    Plot line chart for two columns in the DataFrame.
+
+    Parameters:
+        df (DataFrame): Input DataFrame.
+        x_column (str): Name of the column for x-axis.
+        y_column (str): Name of the column for y-axis.
+        title (str): Title for the plot.
+
+    Returns:
+        None
+    """
+    fig = px.line(df, x=df[x_column], y=y_column, title=title)
+    fig.show()
+
+def plot_histograms(df, figsize=(15, 15)):
+    """
+    Plot histograms for all columns in the DataFrame.
+
+    Parameters:
+        df (DataFrame): Input DataFrame.
+        figsize (tuple): Figure size for the histograms.
+
+    Returns:
+        None
+    """
+    df.hist(figsize=figsize)
+
+def set_plotly_template(template='plotly_white'):
+    """
+    Set Plotly template.
+
+    Parameters:
+        template (str): Name of the Plotly template.
+
+    Returns:
+        None
+    """
+    pio.templates.default = template
+
+if __name__ == "__main__":
+    file_path = 'C:/Users/DELL/Desktop/Instagram/Instagram data.csv'
+
+    # Load data
+    df = load_data(file_path)
+
+    # Preprocess data
+    df = preprocess_data(df)
+
+    # Set Plotly template
+    set_plotly_template()
+
+    # Plot histogram
+    plot_histogram(df, column='Impressions', title='Impressions Histogram')
+
+    # Plot line chart
+    plot_line(df, x_column='index', y_column='Impressions', title='Impressions Over Time')
+
+    # Plot histograms for all columns
+    plot_histograms(df)
